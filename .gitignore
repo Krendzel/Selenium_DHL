@@ -1,0 +1,8 @@
+/xmls
+/xmls_fixed
+debug.log
+geckodriver.log
+dhl_selenium.py
+color.py
+__pycache__
+config.ini
