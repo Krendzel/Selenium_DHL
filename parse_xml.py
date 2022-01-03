@@ -24,8 +24,9 @@ driver.get("https://dhl24.com.pl/DHL2/shipment.html")
 driver.implicitly_wait(10)
 time.sleep(2)
 
+
 # Login
-def Login_panel():
+def login_panel():
     # create a new Firefox session
     
     privacy_btn = driver.find_element_by_id("onetrust-accept-btn-handler")
@@ -40,6 +41,7 @@ def Login_panel():
 
     login_btn = driver.find_element_by_id("button-zaloguj")
     login_btn.click()
+
 
 def fill_address(city, street, number ,refliv):
     
@@ -85,8 +87,9 @@ def move_old_xml():
     for file in fnmatch.filter(os.listdir(path_out), "*.xml"):
         shutil.move(os.path.join(path_out, file), os.path.join(path_out_old, file))
 
+
 # move_old_xml()
-Login_panel()
+login_panel()
 for file in os.listdir(path):
     tree = ET.parse(path+file)
     root = tree.getroot()
