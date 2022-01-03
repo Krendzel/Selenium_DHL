@@ -1,8 +1,9 @@
-/xmls
-/xmls_fixed
+APP_*/
 debug.log
 geckodriver.log
 dhl_selenium.py
 color.py
 __pycache__
 config.ini
+.env*
+venv
