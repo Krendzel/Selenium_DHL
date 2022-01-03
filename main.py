@@ -27,8 +27,10 @@ class ParseApp:
 
     def init_app(self):
         cprint("Initializing app...", 'green')
-        self.check_dirs()
-        pass
+        try:
+            self.check_dirs()
+        except KeyboardInterrupt:
+            cprint("Exiting...", 'red')
 
     def check_dirs(self):
         if not os.path.exists(self.SRC_PATH):
