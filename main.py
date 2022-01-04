@@ -1,6 +1,9 @@
 import os, sys
 from dotenv import load_dotenv
+from selenium.common.exceptions import NoSuchElementException
 from termcolor import colored, cprint
+from selenium import webdriver
+import time
 
 
 def create_dir(dir_name):
@@ -44,6 +47,34 @@ class ParseApp:
         else:
             cprint("Checking directories...", 'green')
 
+    def init_driver(self):
+        cprint("Initializing driver...", 'green')
+        options = webdriver.ChromeOptions()
+        options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        driver = webdriver.Chrome('C:/web_drivers/chromedriver.exe', options=options)
+        driver.get("https://sandbox.dhl24.com.pl/pl/uzytkownik/zaloguj.html", )
+        driver.implicitly_wait(1)
+
+        return driver
+
+    def login_panel(self, driver):
+        try:
+            privacy_btn = driver.find_element_by_class_name("save-preference-btn-handler")
+            privacy_btn.click()
+        except NoSuchElementException:
+            cprint("No privacy button found", 'red')
+
+        # TODO: find better way to find elements
+        login_input = driver.find_element_by_css_selector("[id^='LoginForm_'][type='text']")
+        login_input.send_keys(self.DHL_LOGIN)
+
+        pass_input = driver.find_element_by_css_selector("[id^='LoginForm_'][type='password']")
+        pass_input.send_keys(self.DHL_PASSWORD)
+
+        login_btn = driver.find_element_by_id("button-zaloguj")
+        login_btn.click()
+
 
 app = ParseApp()
-
+chrome = app.init_driver()
+app.login_panel(chrome)
