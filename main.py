@@ -1,9 +1,12 @@
 import os, sys
+import time
+
 from dotenv import load_dotenv
 from selenium.common.exceptions import NoSuchElementException
 from termcolor import colored, cprint
 from selenium import webdriver
-import time
+import xml.etree.ElementTree as ET
+
 
 
 def create_dir(dir_name):
@@ -25,7 +28,7 @@ class ParseApp:
         self.OUT_PATH = os.getenv('DEST_PATH')
         self.OUT_OLD_PATH = os.getenv('DEST_OLD_PATH')
         self.ERROR_PATH = os.getenv('ERROR_PATH')
-        cprint("Initializing app...", 'green')
+        cprint("🔥 Initializing app...", 'green')
         try:
             self.check_dirs()
         except KeyboardInterrupt:
@@ -45,24 +48,25 @@ class ParseApp:
             create_dir(self.ERROR_PATH)
 
         else:
-            cprint("Checking directories...", 'green')
+            cprint("🔥 Checking directories...", 'green')
 
     def init_driver(self):
-        cprint("Initializing driver...", 'green')
+        cprint("🔥 Initializing driver...", 'green')
         options = webdriver.ChromeOptions()
         options.add_experimental_option('excludeSwitches', ['enable-logging'])
         driver = webdriver.Chrome('C:/web_drivers/chromedriver.exe', options=options)
-        driver.get("https://sandbox.dhl24.com.pl/pl/uzytkownik/zaloguj.html", )
+        driver.get("https://dhl24.com.pl/pl/DHL2/shipment.html", )
         driver.implicitly_wait(1)
 
         return driver
 
     def login_panel(self, driver):
+        cprint("🔥 Logging in...", 'green')
         try:
             privacy_btn = driver.find_element_by_class_name("save-preference-btn-handler")
             privacy_btn.click()
         except NoSuchElementException:
-            cprint("No privacy button found", 'red')
+            cprint("❌ No privacy button found", 'red')
 
         # TODO: find better way to find elements
         login_input = driver.find_element_by_css_selector("[id^='LoginForm_'][type='text']")
@@ -74,7 +78,39 @@ class ParseApp:
         login_btn = driver.find_element_by_id("button-zaloguj")
         login_btn.click()
 
+        try:
+            error_msg = driver.find_element_by_class_name("errorSummary")
+            cprint(f"❌ {error_msg.text}", 'red')
+            driver.quit()
+            sys.exit()
+        except NoSuchElementException:
+            cprint("✅ Login successful", 'green')
+
+    def fill_address(self, driver, city_input, street_input):
+        city = driver.find_element_by_id("ReceiverForm_city")
+        city.clear()
+        city.send_keys(city_input)
+
+        street = driver.find_element_by_id("ReceiverForm_street")
+        street.clear()
+        street.send_keys(street_input)
+
+    def read_xml(self, driver, dir_name):
+        cprint("🔥 Reading XML files...", 'green')
+        for file in os.listdir(dir_name):
+            xml = ET.parse(dir_name + '/' + file)
+            root = xml.getroot()
+            city = root.find('RECIPIENT_CITY').text
+            street = root.find('RECIPIENT_ADDRESS_1').text
+            print(f"{city}")
+            app.fill_address(chrome, city, street)
+            time.sleep(2)  # need to be adjusted to avoid blank input value
+            postal_code = driver.find_element_by_id("ReceiverForm_postalCode").get_property('value')
+            print(f"{postal_code}")
+
 
 app = ParseApp()
 chrome = app.init_driver()
 app.login_panel(chrome)
+app.read_xml(chrome, app.SRC_PATH)
+
