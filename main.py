@@ -3,6 +3,7 @@ import time
 
 from dotenv import load_dotenv
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
 from termcolor import colored, cprint
 from selenium import webdriver
 import xml.etree.ElementTree as ET
@@ -63,23 +64,23 @@ class ParseApp:
     def login_panel(self, driver):
         cprint("🔥 Logging in...", 'green')
         try:
-            privacy_btn = driver.find_element_by_class_name("save-preference-btn-handler")
+            privacy_btn = driver.find_element(By.CLASS_NAME, "save-preference-btn-handler")
             privacy_btn.click()
         except NoSuchElementException:
             cprint("❌ No privacy button found", 'red')
 
         # TODO: find better way to find elements
-        login_input = driver.find_element_by_css_selector("[id^='LoginForm_'][type='text']")
+        login_input = driver.find_element(By.CSS_SELECTOR,"[id^='LoginForm_'][type='text']")
         login_input.send_keys(self.DHL_LOGIN)
 
-        pass_input = driver.find_element_by_css_selector("[id^='LoginForm_'][type='password']")
+        pass_input = driver.find_element(By.CSS_SELECTOR, "[id^='LoginForm_'][type='password']")
         pass_input.send_keys(self.DHL_PASSWORD)
 
-        login_btn = driver.find_element_by_id("button-zaloguj")
+        login_btn = driver.find_element(By.ID, "button-zaloguj")
         login_btn.click()
 
         try:
-            error_msg = driver.find_element_by_class_name("errorSummary")
+            error_msg = driver.find_element(By.CLASS_NAME, "errorSummary")
             cprint(f"❌ {error_msg.text}", 'red')
             driver.quit()
             sys.exit()
@@ -87,11 +88,11 @@ class ParseApp:
             cprint("✅ Login successful", 'green')
 
     def fill_address(self, driver, city_input, street_input):
-        city = driver.find_element_by_id("ReceiverForm_city")
+        city = driver.find_element(By.ID,"ReceiverForm_city")
         city.clear()
         city.send_keys(city_input)
 
-        street = driver.find_element_by_id("ReceiverForm_street")
+        street = driver.find_element(By.ID, "ReceiverForm_street")
         street.clear()
         street.send_keys(street_input)
 
@@ -105,7 +106,7 @@ class ParseApp:
             print(f"{city}")
             app.fill_address(chrome, city, street)
             time.sleep(2)  # need to be adjusted to avoid blank input value
-            postal_code = driver.find_element_by_id("ReceiverForm_postalCode").get_property('value')
+            postal_code = driver.find_element(By.ID, "ReceiverForm_postalCode").get_property('value')
             print(f"{postal_code}")
 
 
