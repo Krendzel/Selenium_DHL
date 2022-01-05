@@ -4,6 +4,7 @@ import time
 from dotenv import load_dotenv
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
 from termcolor import colored, cprint
 from selenium import webdriver
 import xml.etree.ElementTree as ET
@@ -55,7 +56,8 @@ class ParseApp:
         cprint("🔥 Initializing driver...", 'green')
         options = webdriver.ChromeOptions()
         options.add_experimental_option('excludeSwitches', ['enable-logging'])
-        driver = webdriver.Chrome('C:/web_drivers/chromedriver.exe', options=options)
+        service = Service('C:/web_drivers/chromedriver.exe')
+        driver = webdriver.Chrome(service=service, options=options)
         driver.get("https://dhl24.com.pl/pl/DHL2/shipment.html", )
         driver.implicitly_wait(1)
 
@@ -103,11 +105,12 @@ class ParseApp:
             root = xml.getroot()
             city = root.find('RECIPIENT_CITY').text
             street = root.find('RECIPIENT_ADDRESS_1').text
+            postal_code_old = root.find('RECIPIENT_POSTAL_CODE').text
             print(f"{city}")
             app.fill_address(chrome, city, street)
             time.sleep(2)  # need to be adjusted to avoid blank input value
             postal_code = driver.find_element(By.ID, "ReceiverForm_postalCode").get_property('value')
-            print(f"{postal_code}")
+            print(f"{postal_code_old} -> {postal_code}")
 
 
 app = ParseApp()
