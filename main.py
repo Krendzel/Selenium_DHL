@@ -100,7 +100,7 @@ class ParseApp:
         except NoSuchElementException:
             cprint("✅ Login successful", 'green')
 
-    def fill_address(self, driver, city_input, street_input):
+    def fill_address(self, driver, city_input, street_input, house_input):
         city = driver.find_element(By.ID,"ReceiverForm_city")
         city.clear()
         city.send_keys(city_input)
@@ -109,19 +109,23 @@ class ParseApp:
         street.clear()
         street.send_keys(street_input)
 
-    def process_xml(self, driver, dir_name):
+        house_number = driver.find_element(By.ID, "ReceiverForm_number")
+        house_number.clear()
+        house_number.send_keys(house_input)
 
+    def process_xml(self, driver, dir_name):
         cprint("🔥 Reading XML files...", 'green')
         for file in os.listdir(dir_name):
             xml = ET.parse(dir_name + '/' + file)
             root = xml.getroot()
-            order_id = root.find('SHIPMENT_REF_1').text
-            city = root.find('RECIPIENT_CITY').text
-            street = root.find('RECIPIENT_ADDRESS_1').text
-            postal_code_old = root.find('RECIPIENT_POSTAL_CODE')
+            order_id = root.find('order').text
+            city = root.find('city').text
+            street = root.find('street').text
+            house = root.find('houseNumber').text
+            postal_code_old = root.find('postalCode')
             print(f"Checking {order_id}")
-            app.fill_address(chrome, city, street)
-            time.sleep(2)  # need to be adjusted to avoid blank input value
+            app.fill_address(chrome, city, street, house)
+            time.sleep(3)  # need to be adjusted to avoid blank input value
             postal_code = driver.find_element(By.ID, "ReceiverForm_postalCode").get_property('value')
             print(f"{postal_code_old.text} -> {postal_code}")
             postal_code_old.text = postal_code
