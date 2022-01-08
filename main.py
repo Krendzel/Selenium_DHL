@@ -131,6 +131,7 @@ class ParseApp:
 
 
 app = ParseApp()
+app.archive_processed_files()
 chrome = app.init_driver()
 app.login_process(chrome)
 app.process_xml(chrome, app.SRC_PATH)
