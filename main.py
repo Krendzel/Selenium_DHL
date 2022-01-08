@@ -51,8 +51,12 @@ class ParseApp:
         if not os.path.exists(self.ERROR_PATH):
             create_dir(self.ERROR_PATH)
 
-        else:
-            cprint("🔥 Checking directories...", 'green')
+    def archive_processed_files(self):
+        counter = 0
+        for file in fnmatch.filter(os.listdir(self.OUT_PATH), "*.*"):
+            counter += 1
+            shutil.move(self.OUT_PATH + file, self.OUT_OLD_PATH + file)
+        cprint(f"🔥 Archived {counter} files", 'yellow')
 
     def init_driver(self):
         cprint("🔥 Initializing driver...", 'green')
