@@ -1,14 +1,16 @@
-import os, sys
+import fnmatch
+import os
+import shutil
+import sys
 import time
-
-from dotenv import load_dotenv
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from termcolor import colored, cprint
-from selenium import webdriver
 import xml.etree.ElementTree as ET
 
+from dotenv import load_dotenv
+from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from termcolor import colored, cprint
 
 
 def create_dir(dir_name):
