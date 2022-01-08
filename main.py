@@ -32,6 +32,9 @@ class ParseApp:
         self.OUT_PATH = os.getenv('DEST_PATH')
         self.OUT_OLD_PATH = os.getenv('DEST_OLD_PATH')
         self.ERROR_PATH = os.getenv('ERROR_PATH')
+        if len(os.listdir(self.SRC_PATH)) == 0:
+            cprint("❌ No XML files to process, exiting...", 'red')
+            sys.exit()
         cprint("🔥 Initializing app...", 'green')
         try:
             self.check_dirs()
