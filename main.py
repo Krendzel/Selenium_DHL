@@ -42,6 +42,7 @@ class ParseApp:
             cprint("Exiting...", 'red')
 
     def check_dirs(self):
+        cprint("🔥 Checking directories...", 'green')
         if not os.path.exists(self.SRC_PATH):
             create_dir(self.SRC_PATH)
 
@@ -82,7 +83,7 @@ class ParseApp:
             chrome.quit()
 
         # TODO: find better way to find elements
-        login_input = driver.find_element(By.CSS_SELECTOR,"[id^='LoginForm_'][type='text']")
+        login_input = driver.find_element(By.CSS_SELECTOR, "[id^='LoginForm_'][type='text']")
         login_input.send_keys(self.DHL_LOGIN)
 
         pass_input = driver.find_element(By.CSS_SELECTOR, "[id^='LoginForm_'][type='password']")
@@ -108,23 +109,29 @@ class ParseApp:
         street.clear()
         street.send_keys(street_input)
 
-    def read_xml(self, driver, dir_name):
+    def process_xml(self, driver, dir_name):
+
         cprint("🔥 Reading XML files...", 'green')
         for file in os.listdir(dir_name):
             xml = ET.parse(dir_name + '/' + file)
             root = xml.getroot()
+            order_id = root.find('SHIPMENT_REF_1').text
             city = root.find('RECIPIENT_CITY').text
             street = root.find('RECIPIENT_ADDRESS_1').text
-            postal_code_old = root.find('RECIPIENT_POSTAL_CODE').text
-            print(f"{city}")
+            postal_code_old = root.find('RECIPIENT_POSTAL_CODE')
+            print(f"Checking {order_id}")
             app.fill_address(chrome, city, street)
             time.sleep(2)  # need to be adjusted to avoid blank input value
             postal_code = driver.find_element(By.ID, "ReceiverForm_postalCode").get_property('value')
-            print(f"{postal_code_old} -> {postal_code}")
+            print(f"{postal_code_old.text} -> {postal_code}")
+            postal_code_old.text = postal_code
+            xml.write(self.OUT_PATH + file, encoding="UTF-8")
+            cprint(f"✅ {order_id} processed and moved to {self.OUT_PATH}", 'green')
+            shutil.move(self.SRC_PATH + file, self.OUT_PATH + file)
 
 
 app = ParseApp()
 chrome = app.init_driver()
-app.login_panel(chrome)
-app.read_xml(chrome, app.SRC_PATH)
-
+app.login_process(chrome)
+app.process_xml(chrome, app.SRC_PATH)
+chrome.quit()
