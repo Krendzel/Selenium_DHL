@@ -72,13 +72,14 @@ class ParseApp:
 
         return driver
 
-    def login_panel(self, driver):
+    def login_process(self, driver):
         cprint("🔥 Logging in...", 'green')
         try:
             privacy_btn = driver.find_element(By.CLASS_NAME, "save-preference-btn-handler")
             privacy_btn.click()
         except NoSuchElementException:
             cprint("❌ No privacy button found", 'red')
+            chrome.quit()
 
         # TODO: find better way to find elements
         login_input = driver.find_element(By.CSS_SELECTOR,"[id^='LoginForm_'][type='text']")
