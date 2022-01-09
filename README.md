@@ -26,7 +26,9 @@ Change name of `env.example` to `.env` and add your credentials to DHL site.
 
 
 ## Usage
-To run script use: `python main.py`
+Install all dependencies: `pip install -r requirements.txt`
+
+Run script: `python main.py`
 
 On first run you will be asked to create directories for files.
 ```bash
