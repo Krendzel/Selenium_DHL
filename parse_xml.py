@@ -20,7 +20,7 @@ driver = webdriver.Firefox()
 
 driver.maximize_window()
 
-driver.get("https://dhl24.com.pl/DHL2/shipment.html")
+driver.get("https://sandbox.dhl24.com.pl/pl/uzytkownik/zaloguj.html")
 driver.implicitly_wait(10)
 time.sleep(2)
 
