@@ -1,5 +1,9 @@
 # Selenium DHL
 
+Simple python script that uses Selenium to fix wrong postal codes in files that create shipments in DHL by another API.
+If you want to use it, you need to have a DHL account.
+After processing the file, it will move processed file with the fixed postal codes. to another folder. (defined in `.env` file)
+
 ## Prerequisites
 
 ### Selenium WebDriver
@@ -22,7 +26,9 @@ Change name of `env.example` to `.env` and add your credentials to DHL site.
 
 
 ## Usage
-To run script use: `python main.py`
+Install all dependencies: `pip install -r requirements.txt`
+
+Run script: `python main.py`
 
 On first run you will be asked to create directories for files.
 ```bash
@@ -58,6 +64,13 @@ This example is provided by Faker library.
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
+
+## TODO
+
+* [ ] Add ability to use another driver (currently only Chrome)
+* [ ] Catch exceptions and move file to `APP_ERROR`
+* [ ] Add ability to use another file (currently only .xml)
+
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
