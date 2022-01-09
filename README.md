@@ -22,7 +22,15 @@ Add directory with drivers to PATH:
 $env:Path += ";C:\selenium_drivers"
 ```
 ### .env file
-Change name of `env.example` to `.env` and add your credentials to DHL site.
+Create `.env` file and add your credentials to DHL site.
+```env
+DHL_LOGIN=xxx
+DHL_PASSWORD=xxx
+SRC_PATH="APP_IN/"
+DEST_PATH="APP_OUT/"
+DEST_OLD_PATH="APP_OUT/OLD/"
+ERROR_PATH="APP_ERROR/"
+````
 
 
 ## Usage
